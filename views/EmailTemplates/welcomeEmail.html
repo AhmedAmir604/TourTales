@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to TourApp!</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        padding-bottom: 20px;
+      }
+      .header img {
+        width: 100px;
+      }
+      .header h1 {
+        font-size: 24px;
+        color: #333333;
+      }
+      .content {
+        font-size: 16px;
+        color: #555555;
+        line-height: 1.6;
+      }
+      .content h2 {
+        font-size: 20px;
+        color: #20214d;
+      }
+      .content p {
+        margin: 10px 0;
+      }
+      .cta-button {
+        display: block;
+        text-align: center;
+        margin: 20px 0;
+      }
+      .cta-button a {
+        background-color: #20214d;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      .cta-button a:hover {
+        background-color: #3a3a8a;
+      }
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #888888;
+        margin-top: 20px;
+      }
+      .footer p {
+        margin: 5px 0;
+      }
+      .icons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .icons img {
+        width: 40px;
+        margin: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://yourlogo.com/logo.png" alt="TourApp Logo" />
+        <h1>Welcome to TourApp! 🌍</h1>
+      </div>
+      <div class="content">
+        <h2>Hi, {{firstName}}! 👋</h2>
+        <p>
+          We're thrilled to have you on board. TourApp is your ultimate travel
+          companion, designed to help you discover the most amazing adventures
+          around the world. 🗺️
+        </p>
+        <p>
+          Whether you're looking for breathtaking landscapes, thrilling
+          activities, or cultural experiences, TourApp has got you covered. 🌟
+        </p>
+        <div class="cta-button">
+          <a href="{{url}}">Start Exploring Now 🚀</a>
+        </div>
+        <p>
+          If you have any questions, feel free to reach out to our support team
+          at any time. We're here to help you make the most of your travel
+          experiences. ✈️
+        </p>
+        <p>
+          Cheers,<br />
+          The TourApp Team 🧳
+        </p>
+      </div>
+      <div class="footer">
+        <p>&copy; 2024 TourApp. All rights reserved.</p>
+        <p>123 Adventure Road, Wanderlust City, World 12345</p>
+      </div>
+    </div>
+  </body>
+</html>
