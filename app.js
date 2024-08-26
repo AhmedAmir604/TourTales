@@ -96,16 +96,16 @@ app.use((req, res, next) => {
 });
 
 //Routes
-app.use("/api/v1/tours", toursRoute);
-app.use("/api/v1/users", usersRoute);
-app.use("/api/v1/reviews", reviewsRoute);
-app.use("/api/v1/booking", bookingRoute);
+// app.use("/api/v1/tours", toursRoute);
+// app.use("/api/v1/users", usersRoute);
+// app.use("/api/v1/reviews", reviewsRoute);
+// app.use("/api/v1/booking", bookingRoute);
 
 // For Production
-// app.use("/tours", toursRoute);
-// app.use("/users", usersRoute);
-// app.use("/reviews", reviewsRoute);
-// app.use("/booking", bookingRoute);
+app.use("/tours", toursRoute);
+app.use("/users", usersRoute);
+app.use("/reviews", reviewsRoute);
+app.use("/booking", bookingRoute);
 
 //For Production
 app.use(express.static(path.join(__dirname, "/client/dist")));
