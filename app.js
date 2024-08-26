@@ -39,6 +39,7 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "https://js.stripe.com"],
         frameSrc: ["'self'", "https://js.stripe.com"], // Add this line
+        connectSrc: ["'self'", "https://tourtales-production.onrender.com"], // Add this line
       },
     },
   })
