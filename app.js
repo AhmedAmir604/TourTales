@@ -26,7 +26,7 @@ const app = express();
 // https://master--tourtales.netlify.app
 app.use(
   cors({
-    origin: "https://tourtales-production.onrender.com",
+    origin: "https://tt-pro.onrender.com",
     credentials: true,
   })
 );
@@ -39,7 +39,7 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "https://js.stripe.com"],
         frameSrc: ["'self'", "https://js.stripe.com"], // Add this line
-        connectSrc: ["'self'", "https://tourtales-production.onrender.com"], // Add this line
+        connectSrc: ["'self'", "https://tt-pro.onrender.com"], // Add this line
       },
     },
   })
