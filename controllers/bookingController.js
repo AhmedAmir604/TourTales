@@ -22,7 +22,7 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
     // success_url: `${req.protocol}://${req.get("host")}/api/v1/tours/?tour=${
     //   req.params.tourId
     // }&user=${req.user.id}&price=${tour.price}`,
-    success_url: `${req.protocol}://${req.get("host")}/api/v1/tours`,
+    success_url: `${req.protocol}://${req.get("host")}/tours`,
     cancel_url: `${req.protocol}://${req.get("host")}/tours/${
       req.params.tourId
     }`,
