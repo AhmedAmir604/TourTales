@@ -27,9 +27,10 @@ const app = express();
 //GLOBAL Middlewares
 
 //Enabling cors for specific domains
-let reqUrl = "https://tt-pro.onrender.com";
 if (process.env.NODE_ENV === "development") {
-  reqUrl = "http://localhost:5173";
+  const reqUrl = "http://localhost:8000";
+} else {
+  const reqUrl = "https://tt-pro.onrender.com";
 }
 
 app.use(
@@ -115,19 +116,11 @@ app.use("/api/v1/users", usersRoute);
 app.use("/api/v1/reviews", reviewsRoute);
 app.use("/api/v1/booking", bookingRoute);
 
-// For Production
-// app.use("/tours", toursRoute);
-// app.use("/users", usersRoute);
-// app.use("/reviews", reviewsRoute);
-// app.use("/booking", bookingRoute);
-
-//For Production
-if (process.env.NODE_ENV !== "development") {
-  app.use(express.static(path.join(__dirname, "/client/dist")));
-  app.get("*", (req, res) =>
-    res.sendFile(path.join(__dirname, "/client/dist/index.html"))
-  );
-}
+//For serving static files from bundeld
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) =>
+  res.sendFile(path.join(__dirname, "/client/dist/index.html"))
+);
 
 //TO handle 404 for all routes :D
 app.all("*", (req, res, next) => {

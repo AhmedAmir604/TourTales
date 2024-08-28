@@ -14,7 +14,6 @@ import User from "../models/usersModel.js";
 
 export const getCheckoutSession = catchAsync(async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
-
   const tour = await Tour.findById(req.params.tourId);
 
   const session = await stripe.checkout.sessions.create({
@@ -68,17 +67,18 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
 //   res.redirect(`${req.protocol}://${req.get("host")}/tours`);
 // });
 
-export const createBookingCheckout = catchAsync(async (session) => {
+export const createBookingCheckout = catchAsync(async (session, next) => {
   const user = await User.findOne({ email: session.customer_email }).select(
     "id"
   );
-  console.log(user);
   const tour = session.client_reference_id;
   const price = session.line_items[0].price_data.unit_amount / 100;
+
   if (!tour || !user || !price) {
-    return next();
+    return next(new ErrorHandler("Missing data", 400));
   }
-  const booking = await Booking.create({
+
+  await Booking.create({
     tour: tour,
     user: user,
     price: price,
@@ -113,10 +113,12 @@ export const getBookings = catchAsync(async (req, res, next) => {
 // });
 
 export const webhookCheckout = (req, res, next) => {
+  const stripe = new Stripe(process.env.STRIPE_KEY);
+
   const signature = req.headers["stripe-signature"];
   let event;
   try {
-    event = Stripe.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       req.body,
       signature,
       STRIPE_WEBHOOK_KEY

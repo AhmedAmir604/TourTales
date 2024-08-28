@@ -22,7 +22,6 @@ import {
   restrictsTo,
 } from "../controllers/authController.js";
 import { reviewsRoute } from "./reviewsRoutes.js";
-import { createBookingCheckout } from "../controllers/bookingController.js";
 
 export const toursRoute = express.Router();
 
@@ -38,7 +37,7 @@ toursRoute.use("/:tourId/reviews", reviewsRoute);
 toursRoute.route("/top-5-tours").get(aliasTop5Tours, getAllTours);
 toursRoute.route("/tours-stats").get(getTourStats);
 
-toursRoute.route("/").get(isLoggedInClient, createBookingCheckout, getAllTours);
+toursRoute.route("/").get(isLoggedInClient, getAllTours);
 toursRoute.route("/:id").get(findATour);
 
 //Protected Routes for loggedIn and restricted role :)
