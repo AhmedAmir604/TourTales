@@ -37,7 +37,9 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
             name: `${tour.name} Tour`,
             description: tour.summary,
             images: [
-              `https://tt-pro.onrender.com/img/tours/${tour.imageCover}`,
+              `${req.protocol}://${req.get("host")}/img/tours/${
+                tour.imageCover
+              }`,
             ],
           },
         },
@@ -72,7 +74,7 @@ export const createBookingCheckout = catchAsync(async (session, next) => {
     "id"
   );
   const tour = session.client_reference_id;
-  const price = session.line_items[0].price_data.unit_amount / 100;
+  const price = session.display_items[0].price_data.unit_amount / 100;
 
   if (!tour || !user || !price) {
     return next(new ErrorHandler("Missing data", 400));
@@ -114,7 +116,7 @@ export const getBookings = catchAsync(async (req, res, next) => {
 
 export const webhookCheckout = (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
-
+  console.log("X");
   const signature = req.headers["stripe-signature"];
   let event;
   try {
@@ -123,10 +125,13 @@ export const webhookCheckout = (req, res, next) => {
       signature,
       STRIPE_WEBHOOK_KEY
     );
+    console.log("B");
   } catch (err) {
+    console.log("A");
     return res.status(400).send(`Webhook Error ${err.message} `);
   }
   if (event.type === "checkout.session.completed") {
+    console.log("Y");
     createBookingCheckout(event.data.object);
   }
 
