@@ -19,6 +19,7 @@ import cookieParser from "cookie-parser";
 import { bookingRoute } from "./routes/bookingRoute.js";
 import compression from "compression";
 import dotenv from "dotenv";
+import { webhookCheckout } from "./controllers/bookingController.js";
 dotenv.config({ path: "./config.env" });
 
 const app = express();
