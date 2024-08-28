@@ -27,10 +27,11 @@ const app = express();
 //GLOBAL Middlewares
 
 //Enabling cors for specific domains
+let reqUrl;
 if (process.env.NODE_ENV === "development") {
-  const reqUrl = "http://localhost:8000";
+  reqUrl = "http://localhost:8000";
 } else {
-  const reqUrl = "https://tt-pro.onrender.com";
+  reqUrl = "https://tt-pro.onrender.com";
 }
 
 app.use(
