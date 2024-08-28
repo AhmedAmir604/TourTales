@@ -18,12 +18,10 @@ export default function Tours() {
       try {
         setLoading(true);
         const res = await getAllTours();
-        // console.log(res);
         setTours(res.data.data.doc);
         toast.success("Updated!");
       } catch (err) {
-        // console.log(err);
-        toast.error("Failed to fetch data!");
+        toast.error(err);
       } finally {
         setLoading(false);
       }
@@ -44,7 +42,7 @@ export default function Tours() {
       ) : (
         <section className="">
           <Header />
-          <div className="flex pt-[12rem] gap-[5rem] flex-wrap items-center justify-start w-[90%] mx-auto">
+          <div className="flex pt-[12rem] gap-[5rem] flex-wrap items-center justify-center md:justify-start w-[90%] mx-auto">
             {tours.map((tour, index) => (
               <TourCard getTour={handleTour(tour.id)} key={index} tour={tour} />
             ))}

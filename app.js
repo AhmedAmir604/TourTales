@@ -18,15 +18,22 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { bookingRoute } from "./routes/bookingRoute.js";
 import compression from "compression";
+import dotenv from "dotenv";
+dotenv.config({ path: "./config.env" });
 
 const app = express();
 
 //GLOBAL Middlewares
 
-// https://master--tourtales.netlify.app
+//Enabling cors for specific domains
+let reqUrl = "https://tt-pro.onrender.com";
+if (process.env.NODE_ENV === "development") {
+  reqUrl = "http://localhost:5173";
+}
+
 app.use(
   cors({
-    origin: "https://tt-pro.onrender.com",
+    origin: reqUrl,
     credentials: true,
   })
 );
@@ -58,6 +65,12 @@ const limit = rateLimit({
 });
 
 app.use("/api", limit);
+
+app.post(
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  webhookCheckout
+);
 
 //Body parser reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
@@ -108,10 +121,12 @@ app.use("/api/v1/booking", bookingRoute);
 // app.use("/booking", bookingRoute);
 
 //For Production
-app.use(express.static(path.join(__dirname, "/client/dist")));
-app.get("*", (req, res) =>
-  res.sendFile(path.join(__dirname, "/client/dist/index.html"))
-);
+if (process.env.NODE_ENV !== "development") {
+  app.use(express.static(path.join(__dirname, "/client/dist")));
+  app.get("*", (req, res) =>
+    res.sendFile(path.join(__dirname, "/client/dist/index.html"))
+  );
+}
 
 //TO handle 404 for all routes :D
 app.all("*", (req, res, next) => {

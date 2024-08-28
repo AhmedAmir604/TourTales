@@ -81,7 +81,7 @@ export default function Login() {
           </form>
           <a
             onClick={() => handleSingup()}
-            className="mt-4 hover:cursor-pointer underline block hover:text-gray-200 text-[14px] "
+            className="mt-4 hover:cursor-pointer hover:underline block text-[14px] "
           >
             Dont have an account? Sign Up!
           </a>

@@ -10,5 +10,4 @@ export const links = [
 ];
 
 // export const url = "https://tourtales-ebv8.onrender.com";
-// export const url = "http://localhost:8000/api/v1";
-export const url = "https://tt-pro.onrender.com/api/v1";
+export const url = "http://localhost:8000/api/v1";
