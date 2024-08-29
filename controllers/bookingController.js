@@ -19,12 +19,15 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
+    // success_url: `${req.protocol}://${req.get("host")}/api/v1/tours/?tour=${
+    //   req.params.tourId
+    // }&user=${req.user.id}&price=${tour.price}`,
     success_url: `${req.protocol}://${req.get("host")}/tours`,
     cancel_url: `${req.protocol}://${req.get("host")}/tours/${
       req.params.tourId
     }`,
-    customer_email: req.user.email,
-    client_reference_id: req.params.tourId,
+    customer_email: `${req.user.email}`,
+    client_reference_id: `${req.params.tourId}`,
     line_items: [
       {
         price_data: {
@@ -34,9 +37,7 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
             name: `${tour.name} Tour`,
             description: tour.summary,
             images: [
-              `${req.protocol}://${req.get("host")}/img/tours/${
-                tour.imageCover
-              }`,
+              `${req.protocol}://${req.get("host")}/tours/${tour.imageCover}`,
             ],
           },
         },
@@ -70,14 +71,19 @@ export const createBookingCheckout = catchAsync(async (session, next) => {
   const user = await User.findOne({ email: session.customer_email }).select(
     "id"
   );
+  console.log(user);
   const tour = session.client_reference_id;
-  const price = session.amount_total / 100;
+  const price = session.display_items[0].price_data.unit_amount / 100;
 
   if (!tour || !user || !price) {
     return next(new ErrorHandler("Missing data", 400));
   }
 
-  await Booking.create({ tour, user: user.id, price });
+  await Booking.create({
+    tour: tour,
+    user: user,
+    price: price,
+  });
 });
 
 export const getBookings = catchAsync(async (req, res, next) => {
@@ -107,25 +113,30 @@ export const getBookings = catchAsync(async (req, res, next) => {
 //   });
 // });
 
-export const webhookCheckout = (req, res, next) => {
+export const webhookCheckout = async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
+  console.log("X");
   const signature = req.headers["stripe-signature"];
   let event;
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
       signature,
-      process.env.STRIPE_WEBHOOK_KEY
+      STRIPE_WEBHOOK_KEY
     );
+    console.log("B");
   } catch (err) {
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    console.log("A");
+    return res.status(400).send(`Webhook Error ${err.message} `);
   }
-
   if (event.type === "checkout.session.completed") {
-    createBookingCheckout(event.data.object, next);
+    console.log("Y");
+    await createBookingCheckout(event.data.object);
   }
 
-  res.status(200).json({ received: true });
+  res.status(200).json({
+    recieved: "true",
+  });
 };
 
 export const createBooking = createOne(Booking);
