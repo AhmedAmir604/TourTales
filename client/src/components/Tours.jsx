@@ -6,9 +6,11 @@ import Preloader from "./preLoader";
 import React from "react";
 import Header from "./header";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 
 export default function Tours() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState();
@@ -20,6 +22,14 @@ export default function Tours() {
         const res = await getAllTours();
         setTours(res.data.data.doc);
         toast.success("Updated!");
+        const searchParams = new URLSearchParams(location.search);
+        if (searchParams.get("booking") === "success") {
+          toast.success("Booking Successful");
+          searchParams.delete("booking");
+          navigate(`${location.pathname}?${searchParams.toString()}`, {
+            replace: true,
+          });
+        }
       } catch (err) {
         toast.error(err);
       } finally {
