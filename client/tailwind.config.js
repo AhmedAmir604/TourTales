@@ -13,6 +13,8 @@ export default {
       animation: {
         clouds: "clouds 8s infinite ease-in-out",
         sunshine: "sunshines 2s infinite",
+        fadein: "fadein 1.5s ease-in-out",
+        fadeinshow: "fadeinshow 1.5s ease-in-out forwards",
       },
       keyframes: {
         clouds: {

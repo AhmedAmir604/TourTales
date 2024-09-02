@@ -7,6 +7,7 @@ import React from "react";
 import Header from "./header";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
+import { getBookmarks, likedTours } from "../helperFuncs/userHandlers";
 
 export default function Tours() {
   const navigate = useNavigate();
@@ -14,14 +15,22 @@ export default function Tours() {
 
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState();
+  const [bookmarks, setBookmarks] = useState([]);
 
   useEffect(() => {
     const fetchTours = async () => {
       try {
         setLoading(true);
-        const res = await getAllTours();
-        setTours(res.data.data.doc);
-        toast.success("Updated!");
+        if (location.pathname === "/bookmarks") {
+          const res = await likedTours();
+          setTours(res.data.user.likedTours);
+          toast.success("Your Bookmarks!");
+        } else {
+          const res = await getAllTours();
+          setTours(res.data.data.doc);
+          toast.success("Updated!");
+        }
+
         const searchParams = new URLSearchParams(location.search);
         if (searchParams.get("booking") === "success") {
           toast.success("Booking Successful");
@@ -30,6 +39,14 @@ export default function Tours() {
             replace: true,
           });
         }
+        (async () => {
+          try {
+            const res = await getBookmarks();
+            setBookmarks(res.data.tourId.likedTours);
+          } catch (err) {
+            toast.error(err.message);
+          }
+        })();
       } catch (err) {
         toast.error(err);
       } finally {
@@ -37,7 +54,7 @@ export default function Tours() {
       }
     };
     fetchTours();
-  }, []);
+  }, [location.pathname, location.search, navigate]);
 
   const handleTour = (id) => () => {
     navigate(`/tours/${id}`);
@@ -54,7 +71,12 @@ export default function Tours() {
           <Header />
           <div className="flex pt-[12rem] gap-[5rem] flex-wrap items-center justify-center md:justify-start w-[90%] mx-auto">
             {tours.map((tour, index) => (
-              <TourCard getTour={handleTour(tour.id)} key={index} tour={tour} />
+              <TourCard
+                getTour={handleTour(tour.id)}
+                key={index}
+                tour={tour}
+                bookmarks={bookmarks}
+              />
             ))}
           </div>
         </section>

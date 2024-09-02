@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import mongoose from "mongoose";
 import crypto from "node:crypto";
+import Tour from "./tourModel.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -56,6 +57,12 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
+    likedTours: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Tour",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

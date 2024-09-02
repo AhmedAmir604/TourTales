@@ -23,7 +23,7 @@ function App() {
   const location = useLocation();
 
   return (
-    <main className="h-[400v font-sans bg-[#161931]">
+    <main className="h-[400v min-h-[100vh] font-sans bg-[#161931]">
       {/* Conditionally render Header only on the homepage */}
       <Suspense fallback={<div>Loading...</div>}>
         {location.pathname === "/" && <Header />}
@@ -36,6 +36,7 @@ function App() {
           <Route path="/users/me" element={<EditProfile />} />
           <Route path="/my-tours" element={<BookingsPage />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/bookmarks" element={<Tours />} />
         </Routes>
       </Suspense>
       <Toaster richColors position="bottom-center" />

@@ -29,7 +29,7 @@ const app = express();
 //Enabling cors for specific domains
 let reqUrl;
 if (process.env.NODE_ENV === "development") {
-  reqUrl = "http://localhost:8000";
+  reqUrl = "http://localhost:5173";
 } else {
   reqUrl = "https://tt-pro.onrender.com";
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MyButton from "./myButton";
 import { isLoggedIn, logout } from "../helperFuncs/auth";
 import React from "react";
+import { likedTours } from "../helperFuncs/userHandlers";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -25,11 +26,15 @@ export default function Header() {
           setImg(res.data.data.currentUser.photo);
         }
       } catch (err) {
-        console.log(err.response.data.message);
+        throw err.response.data.message;
       }
     };
     fetchUser();
   }, []);
+
+  const getLikedTours = () => {
+    navigate("/bookmarks");
+  };
 
   const handleClick = (path) => {
     navigate(path);
@@ -52,7 +57,7 @@ export default function Header() {
   };
 
   return (
-    <section className="fixed z-20 top-5 w-[90vw]">
+    <section className="fixed z-30 top-5 w-[90vw]">
       <div className="text-white flex justify-between items-center bg-gray-200/10 w-[80vw] mx-auto rounded-xl py-1">
         <div className="flex justify-between w-[100%] gap-[5rem] pr-[2rem]">
           <div className="ml-5 my-auto">
@@ -65,15 +70,21 @@ export default function Header() {
           </div>
           <div className="hidden md:block ">
             {user ? (
-              <div className="flex gap-[3rem] justify-between items-center">
+              <div className="flex gap-[2rem] justify-between items-center">
+                <MyButton
+                  color="#3a317c"
+                  text="My Tours"
+                  handler={() => getLikedTours()}
+                  textColor="white"
+                />
                 <MyButton
                   color="#3a317c"
                   text="Logout"
-                  handler={() => logMeOut()} // Update this path as needed
+                  handler={() => logMeOut()}
                   textColor="white"
                 />
                 <div>
-                  <div className="flex items-center justify-between gap-[1rem] ">
+                  <div className="flex items-center justify-between gap-[1rem] hover:-translate-y-1 transition-all duration-150 ">
                     <img
                       onClick={clickHandler}
                       src={`/users/${img}`}
@@ -151,32 +162,36 @@ export default function Header() {
             </button>
           </div>
           <div
-            className={` ${
+            className={`${
               expand
                 ? "visible opacity-100 "
                 : "opacity-0 invisible translate-x-40"
             } absolute transition-all duration-300 py-[2rem] px-[1rem] rounded-2xl flex top-16 right-10 bg-white/30`}
           >
             {user ? (
-              <div className="flex gap-[3rem] justify-between items-center">
+              <div className="flex flex-col gap-[3rem] justify-between items-center">
                 <MyButton
                   color="#3a317c"
                   text="Logout"
                   handler={() => logMeOut()} // Update this path as needed
                   textColor="white"
                 />
-                <div>
-                  <div className="flex items-center justify-between gap-[1rem] ">
-                    <img
-                      onClick={clickHandler}
-                      src={`/users/${img}`}
-                      alt="user-image"
-                      className="w-[4rem] rounded-full cursor-pointer"
-                    />
-                    <h1 className="text-lg text-gray-100 cursor-pointer">
-                      {name}
-                    </h1>
-                  </div>
+                <MyButton
+                  color="#3a317c"
+                  text="My Tours"
+                  handler={() => getLikedTours()} // Update this path as needed
+                  textColor="white"
+                />
+                <div className="flex flex-col items-center w-[4rem]  justify-between gap-[0.5rem] ">
+                  <img
+                    onClick={clickHandler}
+                    src={`/users/${img}`}
+                    alt="user-image"
+                    className="w-[4rem] rounded-full cursor-pointer"
+                  />
+                  <h1 className="text-lg text-gray-100 cursor-pointer">
+                    {name}
+                  </h1>
                 </div>
               </div>
             ) : (

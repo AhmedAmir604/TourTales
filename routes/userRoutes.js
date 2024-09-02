@@ -9,6 +9,8 @@ import {
   getME,
   uploadUserPhoto,
   resizeUserPhoto,
+  addLikedTours,
+  getBookmarked,
 } from "../controllers/usersController.js";
 import {
   forgotPassword,
@@ -21,6 +23,7 @@ import {
   signup,
   updatePassword,
 } from "../controllers/authController.js";
+import { getLikedTours } from "../controllers/usersController.js";
 
 export const usersRoute = express.Router();
 
@@ -34,6 +37,9 @@ usersRoute.get("/isLoggedIn", isLoggedIn);
 
 //Here we use protect as a middleware for further routes :D
 usersRoute.use(protect);
+
+usersRoute.route("/liked-tours").get(getLikedTours).patch(addLikedTours);
+usersRoute.route("/bookmarked").get(getBookmarked);
 
 //Here i am trying to apply logout
 usersRoute.get("/logout", logout);

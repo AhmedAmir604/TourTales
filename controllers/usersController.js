@@ -23,6 +23,59 @@ const filterObjs = (obj, ...allowedFields) => {
 //   },
 // });
 
+//Liked Tours is implementing over here!
+export const getLikedTours = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id)
+    .select("likedTours")
+    .populate("likedTours");
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    count: user.length,
+    user,
+  });
+});
+
+export const addLikedTours = catchAsync(async (req, res, next) => {
+  const toursId = req.body.likedTours;
+  console.log(toursId);
+  const { likedTours } = await User.findById(req.user.id).select("likedTours");
+  const index = likedTours.indexOf(toursId);
+  if (index > -1) {
+    likedTours.splice(index, 1);
+  } else {
+    likedTours.push(toursId);
+  }
+
+  if (
+    !(await User.findByIdAndUpdate(req.user.id, {
+      likedTours: likedTours,
+    }))
+  ) {
+    return next(new ErrorHandler("cant add rn!", 400));
+  }
+
+  res.status(201).json({
+    status: "success",
+    likedTours,
+  });
+});
+
+export const getBookmarked = catchAsync(async (req, res, next) => {
+  const tourId = await User.findById(req.user.id).select("likedTours");
+  if (!tourId) {
+    return next(new ErrorHandler("Something went wrong!"), 500);
+  }
+
+  res.status(200).json({
+    status: "success",
+    tourId,
+  });
+});
+
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
@@ -59,7 +112,7 @@ export const updateUser = catchAsync(async (req, res, next) => {
     );
   }
   //Filter unwanted fileds :D
-  const obj = filterObjs(req.body, "name", "email");
+  const obj = filterObjs(req.body, "name", "email", "likedTours");
 
   //Here we remove the empty string coming from front-end because the react want controlled states to be defined
   Object.keys(obj).forEach((key) => {
