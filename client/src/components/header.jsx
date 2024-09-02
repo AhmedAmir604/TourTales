@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import MyButton from "./myButton";
 import { isLoggedIn, logout } from "../helperFuncs/auth";
 import React from "react";
-import { likedTours } from "../helperFuncs/userHandlers";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -25,6 +24,7 @@ export default function Header() {
           setName(res.data.data.currentUser.name.split(" ")[0]);
           setImg(res.data.data.currentUser.photo);
         }
+        console.log(import.meta.env.VITE_ENV);
       } catch (err) {
         throw err.response.data.message;
       }
