@@ -1,6 +1,8 @@
 import axios from "axios";
 import { url } from "../../lib/data";
 
+axios.defaults.withCredentials = true;
+
 export const getAllTours = async () => {
   try {
     const res = await axios({
@@ -42,6 +44,7 @@ export const getBookings = async () => {
     const res = await axios({
       method: "GET",
       url: `${url}/booking/my-tours`,
+      // withCredentials: true, // Add this line
     });
     return res;
   } catch (err) {

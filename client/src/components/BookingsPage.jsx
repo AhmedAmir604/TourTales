@@ -17,6 +17,7 @@ export default function BookingsPage() {
         setLoading(true);
         const res = await getBookings();
         if (res && res.data && res.data.bookings) {
+          console.log(res.data.Bookings);
           setBookings(res.data.bookings);
         } else {
           setBookings([]); // Ensuring bookings is an empty array if no bookings exist

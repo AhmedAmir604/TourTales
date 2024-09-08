@@ -1,6 +1,8 @@
 import axios from "axios";
 import { url } from "../../lib/data";
 
+axios.defaults.withCredentials = true;
+
 //Get Review is not used but i will remove it soon no need of it :D
 //You can remove it :)
 
