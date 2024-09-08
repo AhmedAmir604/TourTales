@@ -39,10 +39,9 @@ const updatedTours = tours.map((tour) => ({
 
 const importData = async () => {
   try {
-    console.log(updatedTours[0]);
-    await Tour.create(updatedTours, { validateBeforeSave: false });
+    // await Tour.create(updatedTours, { validateBeforeSave: false });
     await User.create(users, { validateBeforeSave: false });
-    await Review.create(reviews);
+    // await Review.create(reviews);
     console.log("Imported");
   } catch (error) {
     console.log(error);
@@ -52,9 +51,9 @@ const importData = async () => {
 
 const deleteData = async () => {
   try {
-    await Tour.deleteMany();
+    // await Tour.deleteMany();
     await User.deleteMany();
-    await Review.deleteMany();
+    // await Review.deleteMany();
     console.log("Deleted!");
   } catch (error) {
     console.log(error);

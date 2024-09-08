@@ -131,7 +131,17 @@ export default function TourOverview({ tour }) {
               <li key={index} className="bg-[#0c0c24]">
                 <a
                   onClick={() =>
-                    setDate([tour.startDates[index].Date, formattedDate])
+                    setDate([
+                      tour.startDates[index].Date,
+                      new Date(tour.startDates[index].Date).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      ),
+                    ])
                   }
                 >
                   {`${new Date(tour.startDates[index].Date).toLocaleDateString(

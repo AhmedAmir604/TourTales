@@ -28,7 +28,6 @@ export default function Tours() {
         } else {
           const res = await getAllTours();
           setTours(res.data.data.doc);
-          toast.success("Updated!");
         }
 
         const searchParams = new URLSearchParams(location.search);

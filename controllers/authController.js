@@ -52,8 +52,11 @@ export const signup = catchAsync(async (req, res, next) => {
   });
 
   // ${req.get("host")}
-  const url = `${req.protocol}://localhost:5173/users/me`;
-  console.log(url);
+  if (process.env.NODE_ENV === "development") {
+    const url = `${req.protocol}://localhost:5173/users/me`;
+  } else {
+    const url = `${req.protocol}://${req.get("host")}/users/me`;
+  }
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, req, res);

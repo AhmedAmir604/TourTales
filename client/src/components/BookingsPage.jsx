@@ -3,25 +3,27 @@ import Booking from "./Booking";
 import { toast } from "sonner";
 import Preloader from "./preLoader";
 import { useNavigate } from "react-router-dom";
-
 import React, { useEffect, useState } from "react";
 import MyButton from "./myButton";
 
 export default function BookingsPage() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const res = await getBookings();
-        if (res) {
-          // console.log(res);
+        if (res && res.data && res.data.bookings) {
           setBookings(res.data.bookings);
+        } else {
+          setBookings([]); // Ensuring bookings is an empty array if no bookings exist
         }
       } catch (err) {
         toast.error(err.message);
+        setBookings([]); // If there's an error, set it to an empty array
       } finally {
         setLoading(false);
       }
@@ -36,7 +38,7 @@ export default function BookingsPage() {
     <>
       {!loading ? (
         <section className="flex mx-auto justify-start flex-wrap w-[90vw] flex-col gap-10 md:gap-y-10 md:flex-row pt-[8rem]">
-          {bookings.length > 0 ? (
+          {bookings && bookings.length > 0 ? (
             bookings.map((booking, index) => (
               <Booking key={index} booking={booking} />
             ))
@@ -51,10 +53,8 @@ export default function BookingsPage() {
                 alt="No Content"
               />
               <MyButton
-                // color="#3a317c"
                 text="Go Back Home!"
-                handler={() => redirectHome()} // Update this path as needed
-                // textColor="white"
+                handler={redirectHome} // Update this path as needed
               />
             </div>
           )}
