@@ -7,6 +7,9 @@ import {
   updateOne,
   getAllReviews,
 } from "./factoryFunctions.js";
+import Booking from "../models/bookingModel.js";
+import ErrorHandler from "../utils/appError.js";
+import { catchAsync } from "./errorController.js";
 
 //Middleware
 export const addUserTourId = (req, res, next) => {
@@ -65,6 +68,22 @@ export const addUserTourId = (req, res, next) => {
 //     },
 //   });
 // });
+
+//Here checking before giving review if the user has booked the tour
+
+export const IfUserBookedTour = catchAsync(async (req, res, next) => {
+  const tourId = req.body.tour;
+
+  const booking = await Booking.find({ user: req.body.user }).select("tour");
+  const tours = booking.map((el) => el.tour.toString());
+  // console.log(booking);
+  // console.log(tours);
+
+  if (!tours.includes(tourId)) {
+    return next(new ErrorHandler("Cant add review for that Tour!", 400));
+  }
+  next();
+});
 
 export const deleteReview = deleteOne(Review);
 export const addReview = createOne(Review);

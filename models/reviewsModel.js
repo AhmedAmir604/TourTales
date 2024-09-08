@@ -95,6 +95,7 @@ reviewsSchema.post("save", function () {
   this.constructor.getRatingsAverageCount(this.tour);
 });
 
+//Here we use this.model to get the model and this.query to get the query
 //here this.model.findOne(query) means this = document model
 //  means Model(Review) and here this.getQuery()=query in the doc
 //When we use query using doc query is completely exec and finished while with model it presist

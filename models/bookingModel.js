@@ -67,6 +67,13 @@ bookingSchema.statics.getBookingsForUser = async function (userId) {
     .populate({ path: "user", select: "name email" });
 };
 
+bookingSchema.methods.checkBooking = async function (tourId) {
+  if (this.includes(tourId)) {
+    return true;
+  }
+  return false;
+};
+
 const Booking = mongoose.model("Booking", bookingSchema);
 
 export default Booking;

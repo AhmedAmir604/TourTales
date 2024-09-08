@@ -73,7 +73,24 @@ const tourSchema = new mongoose.Schema(
       // default: Date.now(),
       select: false,
     },
-    startDates: [Date],
+    startDates: [
+      {
+        Date: Date,
+        participants: {
+          type: Number,
+          validate: {
+            validator: function (val) {
+              return val >= 0 && val <= this.maxGroupSize; // Allow participants to be 0
+            },
+            message: "Maximum limit reached for participants!",
+          },
+        },
+        soldOut: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
     startLocation: {
       type: {
         type: String,
@@ -137,7 +154,9 @@ tourSchema.virtual("durationHours").get(function () {
 });
 
 tourSchema.virtual("formatedDate").get(function () {
-  return format(this.startDates[0], "MMMM yyyy");
+  // console.log("Dates starts here:");
+  // console.log(this.startDates);
+  return this.startDates.map((el) => el.Date && format(el.Date, "MMMM yyyy"));
 });
 
 tourSchema.virtual("reviews", {
@@ -178,6 +197,16 @@ tourSchema.pre(/^find/, async function (next) {
 
 tourSchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+//Here we check on save query that if the participats > maxGroupsize set soldOut true :D
+tourSchema.pre(/^save/, async function (next) {
+  // const doc = await this.model.findOne(this.getQuery());
+  // console.log(doc);
+  this.startDates.forEach(
+    (el) => el.participants >= this.maxGroupSize && (el.soldOut = true)
+  );
   next();
 });
 

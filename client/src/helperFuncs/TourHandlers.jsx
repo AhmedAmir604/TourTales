@@ -25,11 +25,11 @@ export const getTour = async (id) => {
   }
 };
 
-export const createNewBooking = async (tourId) => {
+export const createNewBooking = async (tourId, date) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `${url}/booking/checkout-session/${tourId}`,
+      url: `${url}/booking/checkout-session/${tourId}?date=${date}`,
     });
     return res;
   } catch (err) {

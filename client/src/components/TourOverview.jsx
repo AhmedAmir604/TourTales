@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineDateRange } from "react-icons/md";
@@ -9,6 +9,12 @@ import ReviewSlider from "./ReviewSlider";
 import GradientButton from "./GradientButton";
 
 export default function TourOverview({ tour }) {
+  const [date, setDate] = useState([]);
+
+  const calculateSeatsLeft = (dateIndex) => {
+    const selectedDate = tour.startDates[dateIndex];
+    return selectedDate ? tour.maxGroupSize - selectedDate.participants : 0;
+  };
   return (
     <section className=" bg-[#20214d] ">
       <div className="relative w-full h-[100vh]">
@@ -18,7 +24,7 @@ export default function TourOverview({ tour }) {
         />
         <div className="absolute bg-[#000000] bg-opacity-70 inset-0"></div>
         <div className="absolute h-[100vh] w-full flex flex-col gap-5 justify-center items-center">
-          <h1 className="text-white text-5xl w-2/3 text-center bg-[#b93185] bg-opacity-30 font-thin leading-tight">
+          <h1 className="text-white text-3xl md:text-5xl  w-2/3 text-center bg-[#b93185] bg-opacity-30 font-thin leading-tight">
             {tour.name}
           </h1>
           <div className=" flex gap-[2rem]">
@@ -31,7 +37,7 @@ export default function TourOverview({ tour }) {
           </div>
         </div>
       </div>
-      <div className=" top-[45rem] py-[3rem] px-[5rem] flex flex-col md:flex-row gap-[5rem] justify-center  items-center md:items-start md:justify-between  w-[100%]">
+      <div className="top-[45rem] py-[3rem] px-[5rem] flex flex-col md:flex-row gap-[5rem] justify-center  items-center md:items-start md:justify-between  w-[100%]">
         <div className=" flex flex-col gap-[4rem] pl-0 md:pl-[5rem] ">
           <ul className="flex flex-col gap-[2rem]  ">
             <h1 className="text-[#b93185] text-xl font-semibold">
@@ -107,10 +113,41 @@ export default function TourOverview({ tour }) {
           </div>
         ))}
       </div>
-      {/* {console.log(tour)} */}
       <ReviewSlider reviews={tour.reviews} />
-      <div className="max-w-fit mt-[3rem] mx-auto pb-10">
-        <GradientButton tourId={tour.id} />
+      <div className="flex flex-col md:flex-col md:items-center pb-[4rem] mx-auto w-[70vw] gap-20">
+        <div className="dropdown dropdown-hover max-h-[3.5rem] z-20 mx-auto bg-[#0c0c24] md:w-1/4 text-center min-w-[10rem] md:min-w-[13rem] rounded-lg ">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn m-1 text-gray-100 bg-[#0c0c24] min-w-[10rem]  md:min-w-[10rem]  "
+          >
+            {date[0] ? date[1] : "Please Select Tour Date!"}
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-[#0c0c24] text-gray-200 rounded-box z-[1] w-[100%] p-2 shadow"
+          >
+            {tour.formatedDate.map((date, index) => (
+              <li key={index} className="bg-[#0c0c24]">
+                <a
+                  onClick={() =>
+                    setDate([tour.startDates[index].Date, formattedDate])
+                  }
+                >
+                  {`${new Date(tour.startDates[index].Date).toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }
+                  )} (Seats Left: ${calculateSeatsLeft(index)})`}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <GradientButton disabled={!date} date={date[0]} tourId={tour.id} />
       </div>
     </section>
   );

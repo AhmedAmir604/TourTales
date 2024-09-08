@@ -5,7 +5,6 @@ export default function UserBar() {
   const [user, setUser] = useState();
   useEffect(() => {
     const res = getAllTours();
-    console.log(res);
   }, []);
 
   return (

@@ -5,6 +5,7 @@ import {
   deleteReview,
   getReview,
   getReviews,
+  IfUserBookedTour,
   updateReview,
 } from "../controllers/reviewsController.js";
 import { protect, restrictsTo } from "../controllers/authController.js";
@@ -15,7 +16,13 @@ export const reviewsRoute = express.Router({ mergeParams: true });
 reviewsRoute
   .route("/")
   .get(getReviews)
-  .post(protect, restrictsTo("user"), addUserTourId, addReview);
+  .post(
+    protect,
+    restrictsTo("user"),
+    addUserTourId,
+    IfUserBookedTour,
+    addReview
+  );
 reviewsRoute.use(protect);
 
 reviewsRoute

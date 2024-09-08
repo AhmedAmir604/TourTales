@@ -41,7 +41,6 @@ export const getLikedTours = catchAsync(async (req, res, next) => {
 
 export const addLikedTours = catchAsync(async (req, res, next) => {
   const toursId = req.body.likedTours;
-  console.log(toursId);
   const { likedTours } = await User.findById(req.user.id).select("likedTours");
   const index = likedTours.indexOf(toursId);
   if (index > -1) {

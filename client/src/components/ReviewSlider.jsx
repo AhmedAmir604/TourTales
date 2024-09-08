@@ -41,8 +41,8 @@ export default function ReviewSlider({ reviews }) {
   };
 
   return (
-    <div className="mx-auto max-w-screen-xl w-[90vw] px-4 py-12 sm:px-6 lg:px-8 lg:py-16 mt-[3rem]">
-      <h2 className="text-center text-4xl font-bold tracking-tight sm:text-5xl text-gray-200">
+    <div className="mx-auto max-w-screen-xl w-[80vw] md:w-[90vw] px-4 py-12 sm:px-6 lg:px-8 lg:py-16 mt-[3rem]">
+      <h2 className="text-center text-2xl md:text-4xl font-bold tracking-tight sm:text-5xl text-gray-200">
         Read trusted reviews from our customers
       </h2>
       <Slider {...settings} className="mt-14 ">

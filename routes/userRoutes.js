@@ -24,6 +24,7 @@ import {
   updatePassword,
 } from "../controllers/authController.js";
 import { getLikedTours } from "../controllers/usersController.js";
+import { getBookings } from "../controllers/bookingController.js";
 
 export const usersRoute = express.Router();
 
@@ -38,7 +39,10 @@ usersRoute.get("/isLoggedIn", isLoggedIn);
 //Here we use protect as a middleware for further routes :D
 usersRoute.use(protect);
 
+//return complete bookmarked tours not only ids but complete
 usersRoute.route("/liked-tours").get(getLikedTours).patch(addLikedTours);
+
+//Only return ids for checking if to show filled bookmark icon on front-end
 usersRoute.route("/bookmarked").get(getBookmarked);
 
 //Here i am trying to apply logout
@@ -53,6 +57,7 @@ usersRoute.patch(
 );
 usersRoute.delete("/deleteMe", deleteMe);
 usersRoute.route("/me").get(getME, getUser);
+usersRoute.route("/:id/bookings").get(getBookings);
 
 //Here we use restrictsTo as a middleware for further routes :D
 usersRoute.use(restrictsTo("admin"));

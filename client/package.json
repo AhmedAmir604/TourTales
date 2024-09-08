@@ -20,6 +20,7 @@
     "axios": "^1.7.3",
     "clsx": "^2.1.1",
     "css-minimizer-webpack-plugin": "^7.0.0",
+    "daisyui": "^4.12.10",
     "dotenv": "^16.4.5",
     "image-minimizer-webpack-plugin": "^4.1.0",
     "postcss-loader": "^8.1.1",

@@ -15,19 +15,27 @@ import User from "../models/usersModel.js";
 export const getCheckoutSession = catchAsync(async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
   const tour = await Tour.findById(req.params.tourId);
+  const { date } = req.query;
+
+  let url;
+  process.env.NODE_ENV === "development"
+    ? (url = "localhost:5173")
+    : (url = req.get("host"));
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
-    success_url: `${req.protocol}://${req.get("host")}/tours?booking=success`,
+    success_url: `${req.protocol}://${url}/tours?booking=success`,
     // success_url: `${req.protocol}://${req.get("host")}/api/v1/tours?user=${
     //   req.user.id
     // }&tour=${tour.id}&price=${tour.price}`,
-    cancel_url: `${req.protocol}://${req.get("host")}/tours/${
-      req.params.tourId
-    }`,
+    // locally without webhooks we created booking by redirecting to above url with details url then using middleware on homepage to listen for this if we succeed then create booking (it is listend by /tours becasue of the query and it classifies as sort) and then redirect to home
+    cancel_url: `${req.protocol}://${url}/tours/${req.params.tourId}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
+    metadata: {
+      date: date,
+    },
     line_items: [
       {
         price_data: {
@@ -46,12 +54,21 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
     ],
   });
 
+  //This query method needs a fix :(
+  // const TourDetails = await Tour.findOneAndUpdate(
+  //   { _id: req.params.tourId, "startDates.Date": startDate },
+  //   { $inc: { "startDates.$.participants": 1 } },
+  //   { runValidators: true, new: true }
+  // ).select("startDates");
+  // const startDate = new Date(`2021-03-11T10:00:00.000Z`);
+
   res.status(200).json({
     status: "success",
     session,
   });
 });
 
+//Old method where we use query string to create a booking
 // export const createBookingCheckout = catchAsync(async (req, res, next) => {
 //   const { tour, user, price } = req.query;
 //   if (!tour || !user || !price) {
@@ -67,43 +84,75 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
 //   res.redirect(`${req.protocol}://${req.get("host")}/tours?booking=success`);
 // });
 
-export const createBookingCheckout = async (session) => {
+export const createBookingCheckout = async (session, next) => {
   try {
+    const startDate = new Date(session.metadata.date);
     const user = await User.findOne({ email: session.customer_email }).select(
       "id"
     );
-    const tour = session.client_reference_id;
+    const tour = await Tour.findById(session.client_reference_id);
     const price = session.amount_total / 100;
 
     if (!tour || !user || !price) {
       throw new ErrorHandler("Missing data", 400);
     }
 
-    await Booking.create({ tour, user: user.id, price });
+    // Create the booking
+    const booking = await Booking.create({
+      tour: session.client_reference_id,
+      user: user.id,
+      price,
+    });
+
+    // Increment participant count for the correct start date
+    console.log("IT starts here!");
+    // console.log(tour.startDates[0].Date.getTime());
+    // console.log(startDate.getTime());
+    console.log(tour.startDates[0].Date);
+    console.log(startDate);
+    tour.startDates.forEach((el) => {
+      if (el.Date.getTime() === startDate.getTime()) {
+        console.log(el.participants);
+        el.participants += 1;
+        console.log(el.participants);
+      }
+    });
+
+    // Save the updated tour document
+    await tour.save({ validateBeforeSave: false });
+
+    console.log("Booking created and participants updated.");
   } catch (err) {
-    console.error("Error creating booking: ", err);
+    console.error("Error creating booking:", err);
   }
 };
-
-export const webhookCheckout = (req, res, next) => {
+export const webhookCheckout = async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
   const signature = req.headers["stripe-signature"];
   let event;
+  let key;
+
+  process.env.NODE_ENV === "development"
+    ? (key =
+        "whsec_0b949bafceeec75a8959cc0f5b45af2b3de70d11c1b2bf50a31b8351d1920cc2")
+    : (key = process.env.STRIPE_WEBHOOK_KEY);
+
   try {
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      signature,
-      process.env.STRIPE_WEBHOOK_KEY
-    );
+    event = stripe.webhooks.constructEvent(req.body, signature, key);
+
+    if (event.type === "checkout.session.completed") {
+      // Immediately acknowledge the event to Stripe
+      res.status(200).json({ received: true });
+
+      // Then, asynchronously handle the booking creation in the background
+      await createBookingCheckout(event.data.object, next);
+      console.log("X");
+    } else {
+      res.status(200).json({ received: true });
+    }
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-
-  if (event.type === "checkout.session.completed") {
-    createBookingCheckout(event.data.object);
-  }
-
-  res.status(200).json({ received: true });
 };
 
 export const getBookings = catchAsync(async (req, res, next) => {
