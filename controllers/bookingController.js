@@ -85,49 +85,31 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
 // });
 
 export const createBookingCheckout = async (session, next) => {
-  try {
-    const startDate = new Date(session.metadata.date);
-    const user = await User.findOne({ email: session.customer_email }).select(
-      "id"
-    );
-    const tour = await Tour.findById(session.client_reference_id);
-    const price = session.amount_total / 100;
-
-    if (!tour || !user || !price) {
-      throw new ErrorHandler("Missing data", 400);
-    }
-
-    // Create the booking
-    const booking = await Booking.create({
-      tour: session.client_reference_id,
-      user: user.id,
-      price,
-    });
-
-    // Increment participant count for the correct start date
-    // console.log("IT starts here!");
-    // console.log(tour.startDates[0].Date.getTime());
-    // console.log(startDate.getTime());
-    // console.log(tour.startDates[0].Date);
-    // console.log(startDate);
-    // console.log(tour.maxGroupSize);
-
-    tour.startDates.forEach((el) => {
-      if (el.Date.getTime() === startDate.getTime()) {
-        console.log(el.participants);
-        el.participants += 1;
-        console.log(el.participants);
-      }
-    });
-
-    // Save the updated tour document
-    await tour.save({ validateBeforeSave: false });
-
-    console.log("Booking created and participants updated.");
-  } catch (err) {
-    console.error("Error creating booking:", err);
+  const startDate = new Date(session.metadata.date);
+  const user = await User.findOne({ email: session.customer_email }).select(
+    "id"
+  );
+  const tour = await Tour.findById(session.client_reference_id);
+  const price = session.amount_total / 100;
+  if (!tour || !user || !price) {
+    throw new ErrorHandler("Missing data", 400);
   }
+  // Create the booking
+  const booking = await Booking.create({
+    tour: session.client_reference_id,
+    user: user.id,
+    price,
+  });
+  // Increment participant count for the correct start date
+  tour.startDates.forEach((el) => {
+    if (el.Date.getTime() === startDate.getTime()) {
+      el.participants += 1;
+    }
+  });
+  // Save the updated tour document
+  await tour.save({ validateBeforeSave: false });
 };
+
 export const webhookCheckout = async (req, res, next) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
   const signature = req.headers["stripe-signature"];
@@ -135,25 +117,20 @@ export const webhookCheckout = async (req, res, next) => {
   let key;
 
   process.env.NODE_ENV === "development"
-    ? (key =
-        "whsec_0b949bafceeec75a8959cc0f5b45af2b3de70d11c1b2bf50a31b8351d1920cc2")
+    ? (key = process.env.STRIPE_WEBHOOK_LOCAL_KEY)
     : (key = process.env.STRIPE_WEBHOOK_KEY);
 
   try {
+    //here we construct stripe event
     event = stripe.webhooks.constructEvent(req.body, signature, key);
-
     if (event.type === "checkout.session.completed") {
-      // Immediately acknowledge the event to Stripe
-      res.status(200).json({ received: true });
-
-      // Then, asynchronously handle the booking creation in the background
+      //creating booking
       await createBookingCheckout(event.data.object, next);
-      console.log("X");
-    } else {
-      res.status(200).json({ received: true });
     }
+    res.status(200).json({ received: true });
   } catch (err) {
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    // Send the error response to Stripe if there was an error
+    return next(new ErrorHandler(`Webhook Error: ${err.message}`));
   }
 };
 

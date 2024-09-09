@@ -37,19 +37,36 @@ const bookingSchema = new mongoose.Schema(
 );
 
 //Not safe will change this asap :D
-bookingSchema.methods.validateBooking = async function (tour, user) {
-  if ((await User.findById(user)) && (await Tour.findById(tour))) {
-    return true;
-  }
-  return false;
-};
-//yeah its part of the above :D
 bookingSchema.pre("save", async function (next) {
-  if (this.validateBooking) {
-    next();
+  if (this.isNew) {
+    // Ensure the user and tour exist
+    const userExists = await User.findById(this.user);
+    const tourExists = await Tour.findById(this.tour);
+    if (!userExists || !tourExists) {
+      return next(new ErrorHandler("Invalid user or tour", 400));
+    }
+
+    // Check for existing bookings
+    const existingBooking = await this.constructor.findOne({
+      user: this.user,
+      tour: this.tour,
+    });
+    if (existingBooking) {
+      return next(
+        new ErrorHandler("Booking already exists for this user and tour", 400)
+      );
+    }
   }
-  ErrorHandler("Cannot validate the credentials!", 400);
+  next();
 });
+
+//yeah its part of the above :D
+// bookingSchema.pre("save", async function (next) {
+//   if (this.validateBooking) {
+//     next();
+//   }
+//   ErrorHandler("Cannot validate the credentials!", 400);
+// });
 
 //You can do it but i have dont it in the lower statics func but better :D
 //These are trigger in ahmed shafiq lang and query middleware in course language
