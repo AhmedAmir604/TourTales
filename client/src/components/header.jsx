@@ -59,7 +59,7 @@ export default function Header() {
   return (
     <section className="fixed z-30 top-5 w-[90vw]">
       <div className="text-white flex justify-between items-center bg-gray-200/10 w-[80vw] mx-auto rounded-xl py-1">
-        <div className="flex justify-between w-[100%] gap-[5rem] pr-[2rem]">
+        <div className="flex justify-between w-[100%] gap-[2rem] pr-[2rem]">
           <div className="ml-5 my-auto">
             <MyButton
               color="#3a317c"
@@ -68,9 +68,9 @@ export default function Header() {
               // textColor="white"
             />
           </div>
-          <div className="hidden md:block ">
+          <div className="hidden md:block">
             {user ? (
-              <div className="flex gap-[2rem] justify-between items-center">
+              <div className=" flex gap-[2rem] justify-between items-center">
                 <MyButton
                   color="#3a317c"
                   text="My Tours"
@@ -189,7 +189,7 @@ export default function Header() {
                     alt="user-image"
                     className="w-[4rem] rounded-full cursor-pointer"
                   />
-                  <h1 className="text-lg text-gray-100 cursor-pointer">
+                  <h1 className="text-lg text-gray-100 cursor-pointer bg-gray-700 p-1 rounded-lg">
                     {name}
                   </h1>
                 </div>

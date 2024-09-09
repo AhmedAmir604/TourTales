@@ -16,7 +16,7 @@ export default function TourOverview({ tour }) {
     return selectedDate ? tour.maxGroupSize - selectedDate.participants : 0;
   };
   return (
-    <section className=" bg-[#20214d] ">
+    <section className={` bg-[#20214d]  `}>
       <div className="relative w-full h-[100vh]">
         <img
           src={`/tours/${tour.imageCover}`}
@@ -127,31 +127,38 @@ export default function TourOverview({ tour }) {
             tabIndex={0}
             className="dropdown-content menu bg-[#0c0c24] text-gray-200 rounded-box z-[1] w-[100%] p-2 shadow"
           >
-            {tour.formatedDate.map((date, index) => (
-              <li key={index} className="bg-[#0c0c24]">
+            {tour.startDates.map((dateItem, index) => (
+              <li
+                key={index}
+                className={`bg-[#0c0c24] ${
+                  dateItem.soldOut ? "disabled" : ""
+                } `}
+              >
                 <a
+                  className={`${
+                    dateItem.soldOut
+                      ? "cursor-not-allowed text-gray-400"
+                      : "hover:bg-gray-600"
+                  } `}
                   onClick={() =>
+                    !dateItem.soldOut && // Only set the date if it is not sold out
                     setDate([
-                      tour.startDates[index].Date,
-                      new Date(tour.startDates[index].Date).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        }
-                      ),
+                      dateItem.Date,
+                      new Date(dateItem.Date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      }),
                     ])
                   }
                 >
-                  {`${new Date(tour.startDates[index].Date).toLocaleDateString(
-                    "en-US",
-                    {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }
-                  )} (Seats Left: ${calculateSeatsLeft(index)})`}
+                  {`${new Date(dateItem.Date).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })} (Seats Left: ${
+                    dateItem.soldOut ? "Sold Out" : calculateSeatsLeft(index)
+                  })`}
                 </a>
               </li>
             ))}

@@ -105,11 +105,13 @@ export const createBookingCheckout = async (session, next) => {
     });
 
     // Increment participant count for the correct start date
-    console.log("IT starts here!");
+    // console.log("IT starts here!");
     // console.log(tour.startDates[0].Date.getTime());
     // console.log(startDate.getTime());
-    console.log(tour.startDates[0].Date);
-    console.log(startDate);
+    // console.log(tour.startDates[0].Date);
+    // console.log(startDate);
+    // console.log(tour.maxGroupSize);
+
     tour.startDates.forEach((el) => {
       if (el.Date.getTime() === startDate.getTime()) {
         console.log(el.participants);
