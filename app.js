@@ -27,16 +27,14 @@ const app = express();
 //GLOBAL Middlewares
 
 //Enabling cors for specific domains
-let reqUrl;
-if (process.env.NODE_ENV === "development") {
-  reqUrl = "http://localhost:5173";
-} else {
-  reqUrl = "https://tt-pro.onrender.com";
-}
 
 app.use(
   cors({
-    origin: reqUrl,
+    origin:
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:5173"
+        : "https://tt-pro.onrender.com",
+
     credentials: true,
   })
 );

@@ -43,7 +43,7 @@ export default function TourOverview({ tour }) {
             <h1 className="text-[#b93185] text-xl font-semibold">
               QUICK FACTS
             </h1>
-            <li className="flex gap-3 border items-center font-semibold text-gray-200">
+            <li className="flex gap-3 items-center font-semibold text-gray-200">
               <MdOutlineDateRange size={20} color="#b93185" /> NEXT DATE{" "}
               <p className="text-gray-400 text-sm"> {tour.formatedDate[0]}</p>
             </li>
