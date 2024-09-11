@@ -16,7 +16,7 @@ export default function TourOverview({ tour }) {
     return selectedDate ? tour.maxGroupSize - selectedDate.participants : 0;
   };
   return (
-    <section className={` bg-[#20214d]  `}>
+    <section className="bg-gradient-to-br from-blue-900 to-purple-900 text-white">
       <div className="relative w-full h-[100vh]">
         <img
           src={`/tours/${tour.imageCover}`}
@@ -43,9 +43,9 @@ export default function TourOverview({ tour }) {
             <h1 className="text-[#b93185] text-xl font-semibold">
               QUICK FACTS
             </h1>
-            <li className="flex gap-3 items-center font-semibold text-gray-200">
+            <li className="flex gap-3 border items-center font-semibold text-gray-200">
               <MdOutlineDateRange size={20} color="#b93185" /> NEXT DATE{" "}
-              <p className="text-gray-400 text-sm"> {tour.formatedDate}</p>
+              <p className="text-gray-400 text-sm"> {tour.formatedDate[0]}</p>
             </li>
             <li className="flex gap-3 items-center font-semibold text-gray-200">
               <IoIosTrendingUp size={20} color="#b93185" /> DIFFICULTY{" "}
@@ -102,19 +102,20 @@ export default function TourOverview({ tour }) {
           </p>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-6 w-[70vw] mx-auto mt-[1.5rem]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 md:p-12">
         {tour.images.map((img, index) => (
-          <div key={index}>
+          <div key={index} className="relative group">
             <img
-              className="h-auto max-w-full rounded-lg hover:scale-110 border-[4px] border-transparent hover:border-gray-900 transition-all duration-200"
               src={`/tours/${img}`}
-              alt="Tour image"
+              className="w-full h-auto rounded-lg shadow-lg transform transition-transform duration-300 group-hover:scale-105"
+              alt={`Tour image ${index + 1}`}
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
           </div>
         ))}
       </div>
       <ReviewSlider reviews={tour.reviews} />
-      <div className="flex flex-col md:flex-col md:items-center pb-[4rem] mx-auto w-[70vw] gap-20">
+      <div className="flex flex-col md:flex-col md:items-center pb-[3rem] mx-auto w-[70vw] gap-20">
         <div className="dropdown dropdown-hover max-h-[3.5rem] z-20 mx-auto bg-[#0c0c24] md:w-1/4 text-center min-w-[10rem] md:min-w-[13rem] rounded-lg ">
           <div
             tabIndex={0}
@@ -165,6 +166,14 @@ export default function TourOverview({ tour }) {
           </ul>
         </div>
         <GradientButton disabled={!date} date={date[0]} tourId={tour.id} />
+      </div>
+      <div className="w-[100%] flex">
+        <a
+          href={`/tours/${tour.id}/reviews`}
+          className="mx-auto mb-5 md:fixed md:bottom-3 md:right-3 inline-block bg-gradient-to-r from-purple-700 via-pink-700 to-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out transform hover:scale-105"
+        >
+          <span className="text-sm md:text-lg">Leave a Review</span>
+        </a>
       </div>
     </section>
   );

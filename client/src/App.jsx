@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import { Toaster } from "sonner";
 import "./App.css";
+import FeedBackPage from "./components/FeedBackPage";
+import ReviewsPage from "./components/ReviewsPage";
 
 // Lazy load components
 const Header = lazy(() => import("./components/header"));
@@ -35,8 +37,10 @@ function App() {
           <Route path="/tours/:id" element={<TourDetails />} />
           <Route path="/users/me" element={<EditProfile />} />
           <Route path="/my-tours" element={<BookingsPage />} />
-          <Route path="*" element={<NotFoundPage />} />
           <Route path="/bookmarks" element={<Tours />} />
+          <Route path="/tours/:tourId/reviews" element={<FeedBackPage />} />
+          <Route path="/my-reviews" element={<ReviewsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
       <Toaster richColors position="bottom-center" />

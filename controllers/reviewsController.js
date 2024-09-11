@@ -15,6 +15,7 @@ import { catchAsync } from "./errorController.js";
 export const addUserTourId = (req, res, next) => {
   //Nested routes
   if (!req.body.tour) req.body.tour = req.params.tourId;
+  console.log(req.params.tourId);
   if (!req.body.user) req.body.user = req.user.id;
   next();
 };
@@ -77,10 +78,16 @@ export const IfUserBookedTour = catchAsync(async (req, res, next) => {
   const booking = await Booking.find({ user: req.body.user }).select("tour");
   const tours = booking.map((el) => el.tour.toString());
   // console.log(booking);
-  // console.log(tours);
+  console.log(tours);
+  console.log(tourId);
 
   if (!tours.includes(tourId)) {
-    return next(new ErrorHandler("Cant add review for that Tour!", 400));
+    return next(
+      new ErrorHandler(
+        "Cant add review for the Tour you have not take :(!",
+        400
+      )
+    );
   }
   next();
 });
