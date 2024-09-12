@@ -25,8 +25,11 @@ import {
 } from "../controllers/authController.js";
 import { getLikedTours } from "../controllers/usersController.js";
 import { getBookings } from "../controllers/bookingController.js";
+import { reviewsRoute } from "./reviewsRoutes.js";
 
 export const usersRoute = express.Router();
+
+usersRoute.use("/reviews", reviewsRoute);
 
 usersRoute.post("/signup", signup);
 usersRoute.post("/login", login);

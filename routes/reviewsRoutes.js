@@ -3,6 +3,7 @@ import {
   addReview,
   addUserTourId,
   deleteReview,
+  getMyReview,
   getReview,
   getReviews,
   IfUserBookedTour,
@@ -24,6 +25,8 @@ reviewsRoute
     addReview
   );
 reviewsRoute.use(protect);
+
+reviewsRoute.route("/my-reviews").get(getMyReview);
 
 reviewsRoute
   .route("/:id")

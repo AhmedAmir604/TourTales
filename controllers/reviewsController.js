@@ -92,6 +92,14 @@ export const IfUserBookedTour = catchAsync(async (req, res, next) => {
   next();
 });
 
+export const getMyReview = catchAsync(async (req, res, next) => {
+  const reviews = await Review.find({ user: req.user.id });
+  res.status(200).json({
+    status: "success",
+    reviews,
+  });
+});
+
 export const deleteReview = deleteOne(Review);
 export const addReview = createOne(Review);
 export const updateReview = updateOne(Review);

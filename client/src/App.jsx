@@ -39,7 +39,7 @@ function App() {
           <Route path="/my-tours" element={<BookingsPage />} />
           <Route path="/bookmarks" element={<Tours />} />
           <Route path="/tours/:tourId/reviews" element={<FeedBackPage />} />
-          <Route path="/my-reviews" element={<ReviewsPage />} />
+          <Route path="/reviews/my-reviews" element={<ReviewsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
