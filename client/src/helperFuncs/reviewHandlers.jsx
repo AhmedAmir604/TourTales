@@ -47,9 +47,11 @@ export const deleteReview = async (id) => {
 export const editReview = async (data) => {
   try {
     const { id } = data;
+
     const res = await axios({
       method: "PATCH",
       url: `${url}/reviews/${id}`,
+      data,
     });
     return res;
   } catch (err) {

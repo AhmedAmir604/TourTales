@@ -1,19 +1,28 @@
 import React from "react";
 
-const StarRating = ({ rating, hoverdStars, setRating, setHoverdStars }) => {
+const StarRating = ({
+  rating,
+  hoverdStars,
+  setRating,
+  setHoverdStars,
+  color,
+  space,
+  size,
+}) => {
   const stars = [1, 2, 3, 4, 5];
 
   return (
-    <div className="flex space-x-3">
+    <div className={`flex space-x-${space}`}>
       {stars.map((el, index) => (
         <svg
           key={index}
           onMouseEnter={() => setHoverdStars(el)}
           onMouseLeave={() => setHoverdStars(0)}
           onClick={() => setRating(el)}
-          className={`h-8 w-8 cursor-pointer text-gray-300 ${
-            el <= hoverdStars ? "text-pink-500" : ""
-          } ${el <= rating ? "text-pink-500" : ""}`}
+          className={`${size}
+         cursor-pointer text-gray-300 ${
+           el <= hoverdStars ? `text-${color}` : ""
+         } ${el <= rating ? `text-${color}` : ""}`}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"

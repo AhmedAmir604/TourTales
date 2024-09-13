@@ -68,7 +68,7 @@ export default function EditProfile() {
   };
 
   const userPhotoError = () => {
-    setPhoto("../public/users/default.jpg");
+    setPhoto("../users/default.jpg");
   };
 
   // const handleSubmit = async (e) => {
@@ -115,6 +115,12 @@ export default function EditProfile() {
               >
                 My Bookings
               </a>
+              <a
+                href="/reviews/my-reviews"
+                className="flex items-center px-3 py-2.5 font-bold bg-[#202142] text-white border rounded-full hover:bg-indigo-700"
+              >
+                My Reviews
+              </a>
             </div>
           </aside>
           <main className="w-full min-h-screen py-1 md:w-2/3 lg:w-3/4">
@@ -143,7 +149,7 @@ export default function EditProfile() {
                         ) : (
                           <label
                             htmlFor="file-upload"
-                            className="py-3.5 px-10 text-base block font-medium text-white bg-indigo-700 rounded-lg border border-indigo-200 hover:bg-indigo-800 focus:z-10 focus:ring-4 focus:ring-indigo-200"
+                            className="cursor-pointer py-3.5 px-10 text-base block font-medium text-white bg-indigo-700 rounded-lg border border-indigo-200 hover:bg-indigo-800 focus:z-10 focus:ring-4 focus:ring-indigo-200"
                           >
                             {" "}
                             <p className="w-[120%]">Change picture</p>
