@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
+    verified: {
+      type: Boolean,
+      required: [true, "User must have a verfied value"],
+      default: false,
+    },
     likedTours: [
       {
         type: mongoose.Schema.ObjectId,
@@ -92,6 +97,7 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassowrd);
 };
 
+//This method is used for protect route to protect the restricted routes :D
 userSchema.methods.passwordChanged = async function (jwtTime) {
   if (this.passwordChangeTime) {
     const updatedTime = parseInt(this.passwordChangeTime.getTime() / 1000, 10);

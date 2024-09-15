@@ -14,18 +14,22 @@ import {
 } from "../controllers/usersController.js";
 import {
   forgotPassword,
+  generateOtp,
   isLoggedIn,
   login,
   logout,
   protect,
   resetPassword,
+  resetPasswordOtp,
   restrictsTo,
   signup,
   updatePassword,
+  verifyOtp,
 } from "../controllers/authController.js";
 import { getLikedTours } from "../controllers/usersController.js";
 import { getBookings } from "../controllers/bookingController.js";
 import { reviewsRoute } from "./reviewsRoutes.js";
+import rateLimit from "express-rate-limit";
 
 export const usersRoute = express.Router();
 
@@ -33,8 +37,19 @@ usersRoute.use("/reviews", reviewsRoute);
 
 usersRoute.post("/signup", signup);
 usersRoute.post("/login", login);
+//I have implemented both methods to reset Password
+//1: Via reset link to email
+//2: Via OTP to the email
+
+//This is reset Link method
 usersRoute.post("/forgotPassword", forgotPassword);
 usersRoute.patch("/resetPassword/:token", resetPassword);
+
+//This is OTP Method
+
+usersRoute.post("/forgot-password", generateOtp);
+usersRoute.post("/reset-password", verifyOtp);
+usersRoute.patch("/reset-password/:token", resetPasswordOtp);
 
 //Here we use isLoggedIn to check if the user is login or not :D its an addition by me..
 usersRoute.get("/isLoggedIn", isLoggedIn);
@@ -63,7 +78,10 @@ usersRoute.route("/me").get(getME, getUser);
 usersRoute.route("/:id/bookings").get(getBookings);
 
 //Here we use restrictsTo as a middleware for further routes :D
+
 usersRoute.use(restrictsTo("admin"));
 
 usersRoute.route("/").get(getAllUsers);
 usersRoute.route("/:id").get(getUser).delete(deleteUser).patch(updateUserAdmin);
+
+//Remeber if you next() from a route it moves to only next middleware stack

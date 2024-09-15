@@ -70,13 +70,21 @@ export default class Email {
       text,
     };
 
-    await this.newTransporter().sendMail(mailOptions);
+    try {
+      await this.newTransporter().sendMail(mailOptions);
+      return true;
+    } catch (err) {
+      throw new Error(err.message || "Something went wrong");
+    }
   }
 
   sendWelcome() {
-    this.send("welcomeEmail.html", "Welcome to the site!");
+    return this.send("welcomeEmail.html", "Welcome to the site!");
   }
-  sendPasswordReset() {
-    this.send("resetPassword.html", "Reset Password Request!");
+  sendPasswordResetOTP() {
+    return this.send("resetPasswordOTP.html", "Reset Password Request!");
+  }
+  sendPasswordResetLink() {
+    return this.send("resetPasswordLink.html", "Reset Password Request!");
   }
 }

@@ -99,7 +99,7 @@ app.use(
   })
 );
 
-//This is used to compress the res
+//This is used to compress the response
 app.use(compression());
 
 //Testing middlewares
@@ -108,6 +108,16 @@ app.use((req, res, next) => {
   console.log(req.Time);
   next();
 });
+
+//This is rate limiter (limit request per) ip for OTP generation :D
+export const otpRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each IP to 5 OTP requests per hour
+  message: "Too many OTP requests from this IP, please try again after an hour",
+});
+
+//Rotue for generating otp for password reset
+app.use("/api/v1/users/forgot-password", otpRateLimiter);
 
 //Routes
 app.use("/api/v1/tours", toursRoute);

@@ -6,6 +6,7 @@ import { promisify } from "util";
 import sendEmail from "../utils/email.js";
 import crypto from "node:crypto";
 import Email from "../utils/email.js";
+import Token from "../models/tokenModel.js";
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -83,7 +84,9 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new ErrorHandler("Please provide valid credentials!", 401));
   }
 
-  const url = `${req.protocol}://localhost:5173/users/me`;
+  const url = `${req.protocol}://${
+    process.env.NODE_ENV === "development" ? "localhost:5173" : req.get("host")
+  }/users/me`;
   await new Email(user, url).sendWelcome();
 
   createSendToken(user, 200, req, res);
@@ -110,6 +113,7 @@ export const protect = catchAsync(async (req, res, next) => {
   //Here we check if the user had not updated the password since last token was generated
   const timeCheck = await currentUser.passwordChanged(decode.iat);
   if (timeCheck) {
+    console.log("TIMECHECK");
     return next(new ErrorHandler("Password updated please login again!", 401));
   }
   req.user = currentUser;
@@ -117,13 +121,13 @@ export const protect = catchAsync(async (req, res, next) => {
 });
 
 export const isLoggedIn = async (req, res, next) => {
+  console.log("XXX");
   if (req.cookies.jwt) {
     try {
       const decode = await promisify(jwt.verify)(
         req.cookies.jwt,
         process.env.JWT_SECRET
       );
-
       const currentUser = await User.findById(decode.id);
       if (!currentUser) {
         res.status(200);
@@ -192,14 +196,13 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   }
   const resetToken = await user.passwordChangeToken();
   await user.save({ validateBeforeSave: false });
-
-  const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/resetPassword/${resetToken}`;
-
   try {
-    const url = `${req.protocol}://localhost:5173/api/v1/users/resetPassword/${resetToken}`;
-    await new Email(user, url).sendPasswordReset();
+    const url = `${req.protocol}://${
+      process.env.NODE_ENV === "development"
+        ? "localhost:5173"
+        : req.get("host")
+    }/users/resetPassword/${resetToken}`;
+    await new Email(user, url).sendPasswordResetLink();
   } catch (error) {
     user.passwordResetToken = undefined;
     user.passwordResetTokenExpiry = undefined;
@@ -278,3 +281,67 @@ export const logout = (req, res) => {
     status: "success",
   });
 };
+
+export const generateOtp = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ErrorHandler("User with this email does not exist!", 404));
+  }
+  const token = await Token.create({ user: user.id });
+  const otp = await token.generateOtp();
+  if (token && (await new Email(user, otp).sendPasswordResetOTP())) {
+    res.status(200).json({
+      status: "success",
+      message: "Email has been sent with a code!",
+    });
+  } else {
+    res.status(400).json({
+      status: "failed",
+    });
+  }
+});
+
+export const verifyOtp = catchAsync(async (req, res, next) => {
+  const otp = crypto.createHash("sha256").update(req.body.otp).digest("hex");
+  const token = await Token.findOne({ token: otp });
+  if (!token) {
+    return next(new ErrorHandler("Invalid or expired OTP try again! :("), 400);
+  }
+  const user = await User.findById(token.user);
+  if (!user) {
+    return next(
+      new ErrorHandler("Cannot find user try again later DUDE!", 404)
+    );
+  }
+  res.status(200).json({
+    status: "success",
+    otp,
+  });
+});
+
+export const resetPasswordOtp = catchAsync(async (req, res, next) => {
+  const token = await Token.findOne({ token: req.params.token }).populate(
+    "user"
+  );
+
+  if (!token || !token.user) {
+    return next(
+      new ErrorHandler("Code has expired or user no longer exists!", 400)
+    );
+  }
+  const user = token.user;
+
+  if (!(await user.resetPassword(req.body.password))) {
+    return next(
+      new ErrorHandler(
+        "Trouble resetting password, please try again later!",
+        400
+      )
+    );
+  }
+  await Token.deleteOne({ _id: token._id });
+  res.status(201).json({
+    status: "success",
+    description: "Password reset successfully!",
+  });
+});
