@@ -83,12 +83,10 @@ export const login = catchAsync(async (req, res, next) => {
   if (!(await user.correctPassword(password, user.password))) {
     return next(new ErrorHandler("Please provide valid credentials!", 401));
   }
-
   const url = `${req.protocol}://${
     process.env.NODE_ENV === "development" ? "localhost:5173" : req.get("host")
   }/users/me`;
   await new Email(user, url).sendWelcome();
-
   createSendToken(user, 200, req, res);
 });
 
