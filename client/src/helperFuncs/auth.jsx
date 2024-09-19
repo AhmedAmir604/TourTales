@@ -66,3 +66,42 @@ export const logout = async () => {
     throw Error(err.response.data.message);
   }
 };
+
+export const generateOtp = async (email) => {
+  try {
+    const res = await axios({
+      method: "POST",
+      url: `${url}/users/forgot-password`,
+      data: { email },
+    });
+    return res;
+  } catch (err) {
+    throw err.response.data;
+  }
+};
+
+export const verifyOtp = async (otp) => {
+  try {
+    const res = await axios({
+      method: "POST",
+      url: `${url}/users/reset-password`,
+      data: { otp },
+    });
+    return res;
+  } catch (err) {
+    throw err.response.data;
+  }
+};
+
+export const resetPassword = async (data, id) => {
+  try {
+    const res = await axios({
+      method: "PATCH",
+      url: `${url}/users/reset-password/${id}`,
+      data,
+    });
+    return res;
+  } catch (err) {
+    throw err.response.data;
+  }
+};

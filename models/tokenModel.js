@@ -12,12 +12,12 @@ const tokenSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 60, //1 min
+    expires: "1m", //1 min
   },
 });
 
 tokenSchema.methods.generateOtp = function () {
-  const otp = crypto.randomInt(10000000, 99999999);
+  const otp = crypto.randomInt(1000, 9999);
   this.token = crypto.createHash("sha256").update(otp.toString()).digest("hex");
   this.save();
   return otp;

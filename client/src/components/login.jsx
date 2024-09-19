@@ -34,6 +34,9 @@ export default function Login() {
   const handleSingup = () => {
     navigate("/signup");
   };
+  const handlePasswordReset = () => {
+    navigate("/forgot-password");
+  };
 
   return (
     <div className="relative w-full h-[100vh]">
@@ -79,12 +82,20 @@ export default function Login() {
               {loading ? <DotsLoader /> : "SIGN IN"}
             </button>
           </form>
-          <a
-            onClick={() => handleSingup()}
-            className="mt-4 hover:cursor-pointer hover:underline block text-[14px] "
-          >
-            Dont have an account? Sign Up!
-          </a>
+          <div className="flex flex-col md:flex-row justify-center md:gap-5 ">
+            <a
+              onClick={() => handleSingup()}
+              className="mt-4 hover:cursor-pointer hover:underline block text-[14px] "
+            >
+              Dont have an account? Sign Up!
+            </a>
+            <a
+              onClick={() => handlePasswordReset()}
+              className="mt-4 hover:cursor-pointer hover:underline block text-[14px] "
+            >
+              Want help signing in?
+            </a>
+          </div>
         </div>
       </div>
     </div>

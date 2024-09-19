@@ -169,3 +169,26 @@ select:-webkit-autofill:focus {
 body {
   @apply font-sans;
 }
+
+/* this is used for chainging the color for suggested emails in Reset Password via otp
+/* Targeting only the input with ID resetEmail */
+#resetEmail:-webkit-autofill {
+  -webkit-text-fill-color: #4a5568 !important; /* Ensure text color is applied */
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset; /* Ensure background color is consistent */
+  box-shadow: 0 0 0px 1000px #ffffff inset; /* Ensure background color is consistent */
+  background-color: transparent !important; /* Ensure background color is consistent */
+}
+
+/* To handle autofill for both WebKit and other browsers */
+#resetEmail:-moz-autofill {
+  color: #4a5568 !important; /* Ensure text color is applied */
+  background-color: transparent !important; /* Ensure background color is consistent */
+}
+
+#resetEmail:-webkit-autofill::placeholder {
+  color: #4a5568 !important; /* Ensure placeholder color is applied */
+}
+
+#resetEmail::placeholder {
+  color: #4a5568; /* Ensure placeholder color is consistent */
+}

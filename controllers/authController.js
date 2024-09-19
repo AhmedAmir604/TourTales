@@ -283,19 +283,22 @@ export const logout = (req, res) => {
 export const generateOtp = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return next(new ErrorHandler("User with this email does not exist!", 404));
-  }
-  const token = await Token.create({ user: user.id });
-  const otp = await token.generateOtp();
-  if (token && (await new Email(user, otp).sendPasswordResetOTP())) {
     res.status(200).json({
-      status: "success",
-      message: "Email has been sent with a code!",
+      status: "sent",
     });
   } else {
-    res.status(400).json({
-      status: "failed",
-    });
+    const token = await Token.create({ user: user.id });
+    const otp = await token.generateOtp();
+    if (token && (await new Email(user, otp).sendPasswordResetOTP())) {
+      res.status(200).json({
+        status: "success",
+        message: "Email has been sent with a code!",
+      });
+    } else {
+      res.status(400).json({
+        status: "failed",
+      });
+    }
   }
 });
 
@@ -313,7 +316,7 @@ export const verifyOtp = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    otp,
+    token: otp,
   });
 });
 

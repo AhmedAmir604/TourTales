@@ -112,7 +112,7 @@ app.use((req, res, next) => {
 //This is rate limiter (limit request per) ip for OTP generation :D
 export const otpRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Limit each IP to 5 OTP requests per hour
+  max: 500, // Limit each IP to 5 OTP requests per hour
   message: "Too many OTP requests from this IP, please try again after an hour",
 });
 

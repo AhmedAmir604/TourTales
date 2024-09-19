@@ -9,6 +9,9 @@ import { Toaster } from "sonner";
 import "./App.css";
 import FeedBackPage from "./components/FeedBackPage";
 import ReviewsPage from "./components/ReviewsPage";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import GenerateOtp from "./components/GenerateOtp";
 
 // Lazy load components
 const Header = lazy(() => import("./components/header"));
@@ -40,6 +43,9 @@ function App() {
           <Route path="/bookmarks" element={<Tours />} />
           <Route path="/tours/:tourId/reviews" element={<FeedBackPage />} />
           <Route path="/reviews/my-reviews" element={<ReviewsPage />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/reset-password" element={<ForgotPassword />} />
+          <Route path="/forgot-password" element={<GenerateOtp />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
