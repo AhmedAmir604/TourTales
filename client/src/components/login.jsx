@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { login } from "../helperFuncs/auth";
 import DotsLoader from "./loader";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   // const { user, setUser } = useUserContext();
 
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ export default function Login() {
     try {
       const res = await login(email, password);
       if (res.status === 200) {
-        navigate("/tours"); // Navigate after setting user
+        navigate("/verify-otp"); // Navigate after setting user
         toast.success("Success!");
       }
     } catch (err) {
@@ -48,8 +49,12 @@ export default function Login() {
 
       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div className="text-white text-center p-4 w-[80%] max-w-lg">
-          <h1 className="text-5xl font-thin mb-4">Welcome</h1>
-          <p className="mb-6 text-4xl font-thin">Have an account?</p>
+          <h1 className="text-3xl md:text-5xl font-thin mb-2 md:mb-4">
+            Welcome
+          </h1>
+          <p className="mb-6 text-2xl md:text-4xl font-thin">
+            Have an account?
+          </p>
           <form
             className="flex flex-col items-center gap-5"
             onSubmit={handleSubmit}
@@ -82,7 +87,7 @@ export default function Login() {
               {loading ? <DotsLoader /> : "SIGN IN"}
             </button>
           </form>
-          <div className="flex flex-col md:flex-row justify-center md:gap-5 ">
+          <div className="flex flex-col justify-center">
             <a
               onClick={() => handleSingup()}
               className="mt-4 hover:cursor-pointer hover:underline block text-[14px] "
@@ -91,7 +96,7 @@ export default function Login() {
             </a>
             <a
               onClick={() => handlePasswordReset()}
-              className="mt-4 hover:cursor-pointer hover:underline block text-[14px] "
+              className="mt-2 hover:cursor-pointer hover:underline block text-[14px] "
             >
               Want help signing in?
             </a>

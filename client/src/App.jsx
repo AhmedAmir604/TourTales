@@ -45,6 +45,7 @@ function App() {
           <Route path="/reviews/my-reviews" element={<ReviewsPage />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/reset-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp" element={<ForgotPassword />} />
           <Route path="/forgot-password" element={<GenerateOtp />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

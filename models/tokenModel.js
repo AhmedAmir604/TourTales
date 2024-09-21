@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import crypto from "node:crypto";
+import ErrorHandler from "../utils/appError.js";
 
 const tokenSchema = new mongoose.Schema({
   user: {
@@ -12,7 +13,8 @@ const tokenSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: "1m", //1 min
+    required: true,
+    expires: 60,
   },
 });
 
@@ -22,6 +24,16 @@ tokenSchema.methods.generateOtp = function () {
   this.save();
   return otp;
 };
+
+// Pre-find middleware to check if token has expired and manually delete it if needed
+tokenSchema.post(/^find/, async function () {
+  // Fetch the token based on the current query
+  if (this.createdAt < Date.now() - 60000) {
+    this.deleteOne();
+    return next(new ErrorHandler("ERER", 404));
+  }
+  // Proceed if the token is valid
+});
 
 const Token = mongoose.model("Token", tokenSchema);
 

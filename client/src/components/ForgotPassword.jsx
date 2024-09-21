@@ -1,11 +1,13 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { verifyOtp } from "../helperFuncs/auth";
+import { verfiy2fa, verifyOtp } from "../helperFuncs/auth";
 import ToastMessage from "../subComponents/ToastMessage";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputRef = useRef([]);
 
@@ -54,13 +56,20 @@ export default function ForgotPassword() {
   const handleSubmission = async (e) => {
     e.preventDefault();
     try {
-      const res = await verifyOtp(otp.join(""));
-      if (res) {
+      if (location.pathname.includes("verify-otp")) {
+        await verfiy2fa(otp.join(""));
         ToastMessage("success", {
           title: "Success",
           description: "OTP Verified",
         });
-        navigate(`/reset-password/${res.data.token}`);
+        navigate("/tours");
+      } else {
+        const res = await verifyOtp(otp.join(""));
+        ToastMessage("success", {
+          title: "Success",
+          description: "OTP Verified",
+        });
+        navigate("/reset-password");
       }
     } catch (err) {
       ToastMessage("error", {

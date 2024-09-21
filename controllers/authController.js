@@ -83,11 +83,15 @@ export const login = catchAsync(async (req, res, next) => {
   if (!(await user.correctPassword(password, user.password))) {
     return next(new ErrorHandler("Please provide valid credentials!", 401));
   }
-  const url = `${req.protocol}://${
-    process.env.NODE_ENV === "development" ? "localhost:5173" : req.get("host")
-  }/users/me`;
-  await new Email(user, url).sendWelcome();
-  createSendToken(user, 200, req, res);
+  //commented this code cause not going to send mail on login becasue of free email sending limit
+  // const url = `${req.protocol}://${
+  //   process.env.NODE_ENV === "development" ? "localhost:5173" : req.get("host")
+  // }/users/me`;
+  // await new Email(user, url).sendWelcome();
+  req.user = user;
+  next();
+  //Now i am adding 2fa feature my own addition :D
+  // createSendToken(user, 200, req, res);
 });
 
 export const protect = catchAsync(async (req, res, next) => {
@@ -119,7 +123,6 @@ export const protect = catchAsync(async (req, res, next) => {
 });
 
 export const isLoggedIn = async (req, res, next) => {
-  console.log("XXX");
   if (req.cookies.jwt) {
     try {
       const decode = await promisify(jwt.verify)(
@@ -345,4 +348,30 @@ export const resetPasswordOtp = catchAsync(async (req, res, next) => {
     status: "success",
     description: "Password reset successfully!",
   });
+});
+
+export const generateOtpLogin = catchAsync(async (req, res, next) => {
+  const token = await Token.create({ user: req.user.id });
+  const otp = await token.generateOtp();
+  // && (await new Email(req.user, otp).sendPasswordResetOTP())
+  if (token) {
+    res.status(200).json({
+      stauts: "success",
+      description: "otp generated!",
+      otp,
+    });
+  } else {
+    return next(new ErrorHandler("cannot generate OTP!", 400));
+  }
+});
+
+export const verifyOtpLogin = catchAsync(async (req, res, next) => {
+  const otp = crypto.createHash("sha256").update(req.body.otp).digest("hex");
+  const token = await Token.findOne({ token: otp });
+  if (!token) {
+    return next(new ErrorHandler("Invalid or expired OTP! :("), 400);
+  }
+  const user = await User.findById(token.user).select("+password");
+  await Token.deleteOne(token._id);
+  createSendToken(user, 200, req, res);
 });

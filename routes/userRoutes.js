@@ -15,6 +15,7 @@ import {
 import {
   forgotPassword,
   generateOtp,
+  generateOtpLogin,
   isLoggedIn,
   login,
   logout,
@@ -25,18 +26,22 @@ import {
   signup,
   updatePassword,
   verifyOtp,
+  verifyOtpLogin,
 } from "../controllers/authController.js";
 import { getLikedTours } from "../controllers/usersController.js";
 import { getBookings } from "../controllers/bookingController.js";
 import { reviewsRoute } from "./reviewsRoutes.js";
-import rateLimit from "express-rate-limit";
 
 export const usersRoute = express.Router();
 
 usersRoute.use("/reviews", reviewsRoute);
 
 usersRoute.post("/signup", signup);
-usersRoute.post("/login", login);
+usersRoute.post("/login", login, generateOtpLogin);
+//2fa implementation
+
+usersRoute.post("/verify-otp", verifyOtpLogin);
+
 //I have implemented both methods to reset Password
 //1: Via reset link to email
 //2: Via OTP to the email

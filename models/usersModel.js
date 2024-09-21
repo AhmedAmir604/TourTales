@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema(
     },
     verified: {
       type: Boolean,
-      required: [true, "User must have a verfied value"],
+      required: true,
       default: false,
     },
     likedTours: [

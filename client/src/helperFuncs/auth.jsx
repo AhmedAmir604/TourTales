@@ -93,6 +93,19 @@ export const verifyOtp = async (otp) => {
   }
 };
 
+export const verfiy2fa = async (otp) => {
+  try {
+    const res = await axios({
+      method: "POST",
+      url: `${url}/users/verify-otp`,
+      data: { otp },
+    });
+    return res;
+  } catch (err) {
+    throw err.response.data;
+  }
+};
+
 export const resetPassword = async (data, id) => {
   try {
     const res = await axios({

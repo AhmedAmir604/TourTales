@@ -17,6 +17,7 @@ export default class Email {
 
   newTransporter() {
     if (process.env.NODE_ENV === "production") {
+      console.log("PRO");
       return nodemailer.createTransport({
         host: process.env.EMAIL_HOST_MAILERSEND,
         port: process.env.EMAIL_PORT_MAILERSEND,
@@ -72,9 +73,11 @@ export default class Email {
 
     try {
       await this.newTransporter().sendMail(mailOptions);
+      console.log("SUCCESS");
       return true;
     } catch (err) {
-      throw new Error(err.message || "Something went wrong");
+      console.log(err);
+      throw Error(err.message || "Something went wrong");
     }
   }
 
