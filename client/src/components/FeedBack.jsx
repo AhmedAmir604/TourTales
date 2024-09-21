@@ -52,6 +52,9 @@ export default function FeedBack() {
                 hoverdStars={hoverdStars}
                 setRating={setRating}
                 setHoverdStars={setHoverdStars}
+                color={"red-500"}
+                size={"h-10 w-10"}
+                space={"2"}
               />
             </div>
           </div>
