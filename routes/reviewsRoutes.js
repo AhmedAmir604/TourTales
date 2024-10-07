@@ -17,13 +17,7 @@ export const reviewsRoute = express.Router({ mergeParams: true });
 reviewsRoute
   .route("/")
   .get(getReviews)
-  .post(
-    protect,
-    restrictsTo("user"),
-    addUserTourId,
-    IfUserBookedTour,
-    addReview
-  );
+  .post(protect, restrictsTo("user", "admin"), addUserTourId, addReview);
 reviewsRoute.use(protect);
 
 reviewsRoute.route("/my-reviews").get(getMyReview);

@@ -36,11 +36,14 @@ tokenSchema.post(/^find/, async function () {
 
 tokenSchema.pre("save", async function (next) {
   const currentTime = Date.now();
-  const doc = await this.constructor.deleteOne({
+  const doc = await this.constructor.find({
     createdAt: { $lte: currentTime },
   });
-  console.log(doc);
-
+  if (doc.lenght > 1) {
+    const doc = await this.constructor.find({
+      createdAt: { $lte: currentTime },
+    });
+  }
   next();
 });
 
