@@ -90,7 +90,7 @@ export const login = catchAsync(async (req, res, next) => {
   // await new Email(user, url).sendWelcome();
   req.user = user;
   next();
-  //Now i am adding 2fa feature my own addition :D
+  //Now i am adding 2fa feature my own addition :D thats why dont need to send token here can send token after otp verifcation
   // createSendToken(user, 200, req, res);
 });
 
@@ -293,6 +293,7 @@ export const generateOtp = catchAsync(async (req, res, next) => {
     const token = await Token.create({ user: user.id });
     const otp = await token.generateOtp();
     if (token && (await new Email(user, otp).sendPasswordResetOTP())) {
+      console.log(otp);
       res.status(200).json({
         status: "success",
         message: "Email has been sent with a code!",
@@ -353,6 +354,7 @@ export const resetPasswordOtp = catchAsync(async (req, res, next) => {
 export const generateOtpLogin = catchAsync(async (req, res, next) => {
   const token = await Token.create({ user: req.user.id });
   const otp = await token.generateOtp();
+  console.log(otp);
   // && (await new Email(req.user, otp).sendPasswordResetOTP())
   if (token) {
     res.status(200).json({

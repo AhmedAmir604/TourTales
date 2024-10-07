@@ -65,11 +65,14 @@ export default function ForgotPassword() {
         navigate("/tours");
       } else {
         const res = await verifyOtp(otp.join(""));
+        console.log(res);
         ToastMessage("success", {
           title: "Success",
           description: "OTP Verified",
         });
-        navigate("/reset-password");
+        // window.location.href = `/reset-password/${res.data.token}`;
+
+        navigate(`/reset-password/${res.data.token}`);
       }
     } catch (err) {
       ToastMessage("error", {

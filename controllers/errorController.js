@@ -17,6 +17,7 @@ const handleDuplicateErrorDB = (err) => {
   } else if (keyValue.review) {
     duplicateField = `Review "${keyValue.review}"`;
   }
+  //I will add keyVlaue for booking to
   // Create the error message
   const message = `${duplicateField} already exists. Please try something different!`;
   // Return a new instance of ErrorHandler with the message and a 500 status code

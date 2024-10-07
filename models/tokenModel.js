@@ -12,9 +12,8 @@ const tokenSchema = new mongoose.Schema({
   token: { type: String },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now() + 6000,
     required: true,
-    expires: 60,
   },
 });
 
@@ -33,6 +32,16 @@ tokenSchema.post(/^find/, async function () {
     return next(new ErrorHandler("ERER", 404));
   }
   // Proceed if the token is valid
+});
+
+tokenSchema.pre("save", async function (next) {
+  const currentTime = Date.now();
+  const doc = await this.constructor.deleteOne({
+    createdAt: { $lte: currentTime },
+  });
+  console.log(doc);
+
+  next();
 });
 
 const Token = mongoose.model("Token", tokenSchema);

@@ -76,7 +76,7 @@ app.post(
 //Body parser reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
 
-//Cookie parser so we can have access to cookie on every request
+//Cookie parser so we can have access to cookie easily cause we cant directly manipulate and access the cookie as it is sent in cookie = 'jwt=key' format on every request
 app.use(cookieParser());
 
 //Use this for data sanitization fight noSQL injections :(

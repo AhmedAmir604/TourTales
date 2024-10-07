@@ -15,6 +15,19 @@ export default function TourOverview({ tour }) {
     const selectedDate = tour.startDates[dateIndex];
     return selectedDate ? tour.maxGroupSize - selectedDate.participants : 0;
   };
+
+  const handleDateSelect = (dateItem) => {
+    if (!dateItem.soldOut) {
+      setDate([
+        dateItem.Date,
+        new Date(dateItem.Date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+      ]);
+    }
+  };
   return (
     <section className="bg-gradient-to-br from-blue-900 to-purple-900 text-white">
       <div className="relative w-full h-[100vh]">
@@ -141,17 +154,7 @@ export default function TourOverview({ tour }) {
                       ? "cursor-not-allowed text-gray-400"
                       : "hover:bg-gray-600"
                   } `}
-                  onClick={() =>
-                    !dateItem.soldOut && // Only set the date if it is not sold out
-                    setDate([
-                      dateItem.Date,
-                      new Date(dateItem.Date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      }),
-                    ])
-                  }
+                  onClick={() => handleDateSelect(dateItem)}
                 >
                   {`${new Date(dateItem.Date).toLocaleDateString("en-US", {
                     month: "short",

@@ -27,13 +27,14 @@ export const toursRoute = express.Router();
 
 // toursRoute.param("id", idCheck);
 
-//This middleware is used to check if the user is log in display user profile else continue :D
+//This middleware is used to check if the user is log in to display user profile else continue :D
 // toursRoute.use(isLoggedIn);
 
 //Here we redirect to Reviews Route using this middleware and use mergePramas in reviews router to access the variable :)
 toursRoute.use("/:tourId/reviews", reviewsRoute);
 
 //Open routes for public to access :)
+//Always place the specific route ("/top-5-services") before the dynamic "/:id" ensures that Express correctly matches the more specific route.
 toursRoute.route("/top-5-tours").get(aliasTop5Tours, getAllTours);
 toursRoute.route("/tours-stats").get(getTourStats);
 

@@ -97,7 +97,7 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassowrd);
 };
 
-//This method is used for protect route to protect the restricted routes :D
+//This method is used to Check if password was changed after the token was issued
 userSchema.methods.passwordChanged = async function (jwtTime) {
   if (this.passwordChangeTime) {
     const updatedTime = parseInt(this.passwordChangeTime.getTime() / 1000, 10);

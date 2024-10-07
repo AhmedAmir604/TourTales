@@ -40,14 +40,16 @@ export class APIFeatures {
     }
     return this;
   }
+
+  //limiting results as need
   limit() {
-    //limiting results as need
-    if (this.queryString.limit) {
-      const page = this.queryString.page * 1 || 1;
-      const limit = this.queryString.limit * 1 || 1;
-      const skip = (page - 1) * 3;
-      this.query = this.query.skip(skip).limit(limit);
-    }
+    const limit = this.queryString.limit ? this.queryString.limit * 1 : 6; // Default limit to 6 if not specified
+    const page = this.queryString.page ? this.queryString.page * 1 : 1; // Default page to 1 if not specified
+    // Apply limit
+    this.query = this.query.limit(limit);
+    // Apply skip
+    this.query = this.query.skip((page - 1) * limit); // Skip results based on the current page
+
     return this;
   }
 }

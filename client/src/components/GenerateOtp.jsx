@@ -34,7 +34,8 @@ export default function GenerateOtp() {
       }
     } catch (err) {
       toast.error(
-        (err.message.includes("E11000") && "OTP has already been sent!") ||
+        (err.message.includes(["E11000", "duplicate"]) &&
+          "OTP has already been sent!") ||
           err.message
       );
     }

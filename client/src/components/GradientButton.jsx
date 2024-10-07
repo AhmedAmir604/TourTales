@@ -37,7 +37,7 @@ export default function GradientButton({ disabled, date, tourId }) {
       </div>
       <button
         disabled={disabled}
-        onClick={() => bookingHandler()}
+        onClick={bookingHandler}
         className="relative z-10 inline-flex items-center justify-center w-[10rem] h-[5rem] mx-auto px-8 py-3 text-sm md:text-lg border-[3px] border-black font-bold text-white transition-all duration-200 bg-[#1f1f67]  border-transparent sm:w-auto rounded-xl font-pj hover:bg-[#0c241c]  focus:outline-none"
         role="button"
       >
