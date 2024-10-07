@@ -33,8 +33,7 @@ app.use(
     origin:
       process.env.NODE_ENV === "development"
         ? "http://localhost:5173"
-        : // : "https://tt-pro.onrender.com",
-          "http://localhost:8000",
+        : "https://tt-pro.onrender.com",
 
     credentials: true,
   })
